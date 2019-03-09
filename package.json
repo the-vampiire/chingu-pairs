@@ -1,0 +1,37 @@
+{
+  "name": "chingu-pairs",
+  "version": "0.0.1",
+  "description": "Chingu Pair Programming with CodeWars bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chingu-x/chingu-pairs.git"
+  },
+  "keywords": [
+    "chingu",
+    "pair",
+    "programming",
+    "codewars",
+    "discord"
+  ],
+  "author": "Vampiire",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chingu-x/chingu-pairs/issues"
+  },
+  "homepage": "https://github.com/chingu-x/chingu-pairs#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "pg": "^7.8.2",
+    "sequelize": "^4.43.0",
+    "sequelize-external-methods": "0.0.1"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^5.4.0"
+  }
+}
