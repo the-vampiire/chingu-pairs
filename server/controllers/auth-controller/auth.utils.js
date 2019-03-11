@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
 /**
@@ -56,8 +57,40 @@ const buildAuthRedirect = (authPayload, env) => {
   return CLIENT_DOMAIN;
 };
 
+// TODO: tests
+/**
+ * Signs a Chingu Pairs authentication token
+ * - { sub, iss, exp, registrations }
+ * @param {object} authPayload { sub, registrations }
+ * @param {object} env environment variables
+ * @returns {string} signed JWT
+ */
+const signAuthToken = (authPayload, env) => {
+  const tokenOptions = {
+    issuer: env.DOMAIN,
+    expiresIn: env.AUTH_TOKEN_EXP,
+  };
+
+  return jwt.sign(
+    authPayload,
+    env.AUTH_TOKEN_SECRET,
+    tokenOptions,
+  );
+}
+
+// TODO: docs and tests
+const verifyAuthToken = (token) => {
+  try {
+    return jwt.verify(token, env.AUTH_TOKEN_SECRET, { issuer: env.DOMAIN });
+  } catch(error) {
+    return null;
+  }
+}
+
 module.exports = {
   generateState,
+  signAuthToken,
+  verifyAuthToken,
   buildAuthRedirect,
   setFortifiedCookie,
   buildCookieOptions,
