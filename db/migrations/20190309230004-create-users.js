@@ -3,26 +3,55 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface.createTable('users', {
-      discord_id: {
+      id: {
         unique: true,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+        type: Sequelize.INTEGER,
+      },
+      
+      username: {
+        unique: true,
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+  
+      email: {
+        unique: true,
+        allowNull: false,
+        type: Sequelize.STRING,
+        validate: {
+          isEmail: true,
+        },
+      },
+  
+      github_id: {
+        unique: true,
+        allowNull: false,
+        primaryKey: true,
         type: Sequelize.INTEGER,
       },
 
-      username: {
+      discord_id: {
         unique: true,
-        type: Sequelize.STRING,
+        allowNull: true,
+        type: Sequelize.INTEGER,
       },
 
       rank: {
+        allowNull: true,
         type: Sequelize.INTEGER,
       },
 
       availability: {
+        allowNull: true,
         type: Sequelize.ENUM,
         values: ['any', 'morning', 'night'],
       },
 
       timezone: {
+        allowNull: true,
         type: Sequelize.ENUM,
         values: [
           -11,

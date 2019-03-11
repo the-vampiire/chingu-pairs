@@ -3,26 +3,47 @@ const { loadExternalMethods } = require('sequelize-external-methods');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    discord_id: {
-      unique: true,
-      type: DataTypes.INTEGER,
-    },
-
     username: {
       unique: true,
+      allowNull: false,
       type: DataTypes.STRING,
     },
 
+    email: {
+      unique: true,
+      allowNull: false,
+      type: DataTypes.STRING,
+      validate: {
+        isEmail: true,
+      },
+    },
+
+    github_id: {
+      unique: true,
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.INTEGER,
+    },
+
+    discord_id: {
+      unique: true,
+      allowNull: true,
+      type: DataTypes.INTEGER,
+    },
+
     rank: {
+      allowNull: true,
       type: DataTypes.INTEGER,
     },
 
     availability: {
+      allowNull: true,
       type: DataTypes.ENUM,
       values: ['any', 'morning', 'night'],
     },
 
     timezone: {
+      allowNull: true,
       type: DataTypes.ENUM,
       values: [
         -11,
@@ -54,10 +75,6 @@ module.exports = (sequelize, DataTypes) => {
       ],
     },
   });
-
-  User.associate = (models) => {
-    User.hasOne(models.GithubData);
-  }
 
   loadExternalMethods(User, methods);
 
