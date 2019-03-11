@@ -1,3 +1,5 @@
+const { Op } = require('sequelize');
+
 const env = process.env.NODE_ENV
   ? process.env
   : require('dotenv').config().parsed;
@@ -9,6 +11,7 @@ const profile = {
   host: env.DB_HOST,
   port: env.DB_PORT,
   dialect: 'postgres',
+  operatorsAliases: Op,
   define: {
     underscored: true,
     underscoredAll: true,
