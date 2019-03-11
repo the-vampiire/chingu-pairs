@@ -47,26 +47,7 @@ const buildGithubLoginLink = (state, env) => {
   return loginLink;
 };
 
-/**
- * Signs a Chingu Pairs authentication token
- * - { sub: <user ID> }
- * @param {User} user authenticated user
- * @param {object} env environment variables
- * @returns {string} signed JWT
- */
-const signAuthToken = (user, env) => {
-  const { id } = user;
-
-  const tokenOptions = {
-    issuer: env.DOMAIN,
-    expiresIn: env.AUTH_TOKEN_EXP,
-  };
-
-  return jwt.sign({ id }, env.AUTH_TOKEN_SECRET, tokenOptions);
-};
-
 module.exports = {
-  signAuthToken,
   buildGithubLoginLink,
   getGithubPrimaryEmail,
 }
