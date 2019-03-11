@@ -1,12 +1,11 @@
 const express =  require('express');
 
-const { verifyStates } = require('../auth.middleware');
+const { verifyStates, attachAuthCookie } = require('../auth.middleware');
 const { loginViewHandler, successHandler } = require('./github-auth.handlers');
 const {
   getGithubAccessToken,
   getGithubUserData,
   flagRegistrationStatus,
-  signAuthToken,
 } = require('./github-auth.middleware');
 
 // controls: /auth/
@@ -20,7 +19,7 @@ GithubAuthController.get(
   getGithubAccessToken,
   getGithubUserData,
   flagRegistrationStatus,
-  signAuthToken,
+  attachAuthCookie,
   successHandler,
 );
 
