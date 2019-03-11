@@ -2,7 +2,6 @@ const { buildGithubLoginLink } = require('./github-auth.utils');
 const {
   generateState,
   setFortifiedCookie,
-  buildAuthRedirect,
 } = require('../auth.utils');
 
 const loginViewHandler = (req, res) => {
@@ -21,14 +20,6 @@ const loginViewHandler = (req, res) => {
   });
 };
 
-const successHandler = (req, res) => {
-  const { env, authPayload } = req.context;
-  const redirectLocation = buildAuthRedirect(authPayload, env);
-
-  return res.redirect(redirectLocation);
-};
-
 module.exports = {
   loginViewHandler,
-  successHandler,
 };
