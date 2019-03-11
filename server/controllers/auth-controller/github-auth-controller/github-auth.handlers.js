@@ -22,11 +22,9 @@ const loginViewHandler = (req, res) => {
 };
 
 const successHandler = (req, res) => {
-  const { env, authToken, authPayload } = req.context;
-
+  const { env, authPayload } = req.context;
   const redirectLocation = buildAuthRedirect(authPayload, env);
 
-  setFortifiedCookie(res, 'token', authToken);
   return res.redirect(redirectLocation);
 };
 
