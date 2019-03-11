@@ -31,9 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
     },
 
-    rank: {
+    skill_level: {
       allowNull: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.ENUM,
+      values: ['vanilla', 'frontend', 'fullstack'],
     },
 
     availability: {
