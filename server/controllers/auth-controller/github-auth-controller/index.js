@@ -1,7 +1,8 @@
 const express =  require('express');
 
+const { successHandler } = require('../auth.handlers');
+const { loginViewHandler } = require('./github-auth.handlers');
 const { verifyStates, attachAuthCookie } = require('../auth.middleware');
-const { loginViewHandler, successHandler } = require('./github-auth.handlers');
 const {
   getGithubAccessToken,
   getGithubUserData,
