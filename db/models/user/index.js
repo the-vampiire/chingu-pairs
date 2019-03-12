@@ -20,16 +20,21 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
 
+    avatar_url: {
+      allowNull: true,
+      type: DataTypes.STRING,
+    },
+
     github_id: {
       unique: true,
       allowNull: false,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
 
     discord_id: {
       unique: true,
       allowNull: true,
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
     },
 
     skill_level: {

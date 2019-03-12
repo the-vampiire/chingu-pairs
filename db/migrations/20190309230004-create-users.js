@@ -25,23 +25,27 @@ module.exports = {
           isEmail: true,
         },
       },
+
+      avatar_url: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
   
       github_id: {
         unique: true,
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
 
       discord_id: {
         unique: true,
         allowNull: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
 
       skill_level: {
         allowNull: true,
         type: Sequelize.STRING,
-
       },
 
       availability: {
