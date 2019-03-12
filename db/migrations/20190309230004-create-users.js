@@ -29,7 +29,6 @@ module.exports = {
       github_id: {
         unique: true,
         allowNull: false,
-        primaryKey: true,
         type: Sequelize.INTEGER,
       },
 
@@ -53,6 +52,16 @@ module.exports = {
       timezone: {
         allowNull: true,
         type: Sequelize.INTEGER,
+      },
+
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
+
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
     }),
 
