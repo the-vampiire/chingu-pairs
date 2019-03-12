@@ -10,7 +10,7 @@ const injectContext = (context) => (req, _, next) => {
   next();
 }
 
-module.exports = (env) => ({
+module.exports = (env = {}) => ({
   customMiddleware: {
     injectContext,
   },
