@@ -1,8 +1,5 @@
 const { buildGithubLoginLink } = require('./github-auth.utils');
-const {
-  generateState,
-  setFortifiedCookie,
-} = require('../auth.utils');
+const { generateState, setFortifiedCookie } = require('../auth.utils');
 
 const loginViewHandler = (req, res) => {
   const { env } = req.context;
@@ -10,7 +7,10 @@ const loginViewHandler = (req, res) => {
   const state = generateState();
   const loginLink = buildGithubLoginLink(state, env);
 
-  setFortifiedCookie(res, 'state', state, '/auth/github/success');
+  setFortifiedCookie(res, 'state', state, {
+    env,
+    path: '/auth/github/success',
+  });
 
   return res.render('auth', {
     loginLink,
