@@ -42,7 +42,8 @@ const buildGithubLoginLink = (state, env) => {
   let loginLink = 'https://github.com/login/oauth/authorize';
   loginLink += `?client_id=${GITHUB_CLIENT_ID}`;
   loginLink += `&redirect_uri=${DOMAIN}/auth/github/success`;
-  loginLink += `&state=${state}`;
+  loginLink += `&state=${state}`
+  loginLink += '&scope=user:email';
 
   return loginLink;
 };
