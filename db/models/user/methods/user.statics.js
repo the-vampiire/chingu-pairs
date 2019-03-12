@@ -8,10 +8,9 @@
 async function githubGetOrCreate(githubUserData) {
   const { github_id } = githubUserData;
 
-  const existingUser = this.findOne({ where: { github_id } });
+  const existingUser = await this.findOne({ where: { github_id } });
   if (existingUser) {
-    await existingUser.update({ ...githubUserData });
-    return existingUser;
+    return existingUser.update({ ...githubUserData });
   }
 
   try {
