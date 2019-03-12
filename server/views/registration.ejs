@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Registration</title>
+</head>
+<body>
+  <form action="/registration" method="POST">
+    <input type="hidden" name="csrf_token" value="<%= csrfToken %>" />
+    <div>
+      <label for="skill_level">Skill Level</label>
+      <select name="skill_level">
+        <% for(let i = 0; i < skillLevels.length; ++i) { %>
+          <option value="<%= skillLevels[i].value %>">
+            <%= skillLevels[i].text %>
+          </option>
+        <% } %>
+      </select>
+    </div>
+    <div>
+      <label for="timezone">
+        Select your UTC Timezone
+        <br/>
+        (don't know your timezone?  <a href="" target="_blank">click here to find it</a>)
+      </label>
+      <select name="timezone">
+        <% for(let i = 0; i < timezones.length; ++i) { %>
+          <option value="<%= timezones[i].value %>">
+            <%= timezones[i].text %>
+          </option>
+        <% } %>
+      </select>
+    </div>
+    <div>
+      <label for="availability">
+        Select your Availability
+        <br/>
+        (the period you are most often available for pair programming)
+      </label>
+      <select name="availability">
+        <% for(let i = 0; i < availabilities.length; ++i) { %>
+          <option value="<%= availabilities[i].value %>">
+            <%= availabilities[i].text %>
+          </option>
+        <% } %>
+      </select>
+    </div>
+    <div>
+      <input type="submit" value="Register">
+    </div>
+  </form>
+</body>
+</html>
