@@ -1,4 +1,9 @@
-const { buildCookieOptions } = require('./auth.utils');
+const {
+  signAuthToken,
+  verifyAuthToken,
+  clearFortifiedCookie,
+  setFortifiedCookie,
+} = require('./auth.utils');
 
 /**
  * Verifies the URL state against the server cookie state
@@ -6,29 +11,32 @@ const { buildCookieOptions } = require('./auth.utils');
  * @returns 401 response if state verification fails
  */
 const verifyStates = (req, res, next) => {
-  const { signedCookies, query } = req;
+  const {
+    query,
+    signedCookies,
+    context: { env },
+  } = req;
 
   if (signedCookies.state !== query.state) {
     return res.sendStatus(401);
   }
-
   // on success: clear state cookie
-  res.clearCookie('state', buildCookieOptions(req.path));
+  clearFortifiedCookie(req, res, 'state');
   next();
 };
 
 // TODO: docs and tests
 const extractAuthToken = (req, res, next) => {
   const {
-    env,
+    context: { env },
     signedCookies: { token },
   } = req;
 
-  const authToken = verifyAuthToken(token);
+  const authToken = verifyAuthToken(token, env);
   if (!authToken) {
     return res.sendStatus(401);
   }
-  
+
   req.context.authToken = authToken;
   next();
 };
@@ -41,12 +49,15 @@ const extractAuthToken = (req, res, next) => {
  * @param {object} req.context.env environment variables
  * @param {object} req.context.authPayload { sub, registrations }
  */
-const attachAuthCookie = (req, _, next) => {
+const attachAuthCookie = (req, res, next) => {
   const { env, authPayload } = req.context;
-
   const authToken = signAuthToken(authPayload, env);
 
-  setFortifiedCookie(res, 'token', authToken);
+  setFortifiedCookie(res, 'token', authToken, {
+    env,
+    httpOnly: false,
+    expiresIn: 7 * 24 * 60 * 1000,
+  });
   next();
 };
 
