@@ -28,8 +28,10 @@ const getGithubAccessToken = async (req, res, next) => {
     console.error(error);
     return res.sendStatus(401);
   }
-
-  req.context.access_token = response.data.access_token;
+  
+  // oauth app returns access token in the folowing form:
+    // 'access_token=TOKEN&scope=user%3Aemail&token_type=bearer'
+  req.context.access_token = response.data.split('&')[0].split('=')[1];
   next();
 };
 
@@ -59,10 +61,13 @@ const getGithubUserData = async (req, res, next) => {
   const email = await getGithubPrimaryEmail(access_token);
   if (!email) return res.sendStatus(401);
 
+  const { id, login, avatar_url } = response.data;
+
   req.context.githubUserData = {
     email,
-    github_id: response.data.id,
-    username: response.data.login,
+    avatar_url,
+    username: login,
+    github_id: String(id), // store as string to prevent large int error
   };
   next();
 };
