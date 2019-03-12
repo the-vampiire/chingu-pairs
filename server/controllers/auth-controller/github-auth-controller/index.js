@@ -9,7 +9,6 @@ const {
   flagRegistrationStatus,
 } = require('./github-auth.middleware');
 
-// controls: /auth/
 const GithubAuthController = express.Router();
 
 GithubAuthController.get('/', loginViewHandler);
