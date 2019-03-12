@@ -1,5 +1,7 @@
-const methods = require('./methods');
 const { loadExternalMethods } = require('sequelize-external-methods');
+
+const methods = require('./methods');
+const { timezones, availabilities, skillLevels } = require('../../enums');
 
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
@@ -21,7 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     github_id: {
       unique: true,
       allowNull: false,
-      primaryKey: true,
       type: DataTypes.INTEGER,
     },
 
@@ -34,47 +35,20 @@ module.exports = (sequelize, DataTypes) => {
     skill_level: {
       allowNull: true,
       type: DataTypes.ENUM,
-      values: ['vanilla', 'frontend', 'fullstack'],
+      values: skillLevels.map(skillLevel => skillLevel.value),
     },
 
     availability: {
       allowNull: true,
       type: DataTypes.ENUM,
-      values: ['any', 'morning', 'night'],
+      values: availabilities.map(availability => availability.value),
     },
 
     timezone: {
       allowNull: true,
       type: DataTypes.ENUM,
-      values: [
-        -11,
-        -10,
-        -9,
-        -8,
-        -7,
-        -6,
-        -5,
-        -4,
-        -3,
-        -2,
-        -1,
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-      ],
-    },
+      values: timezones.map(timezone => timezone.value),
+    }
   });
 
   loadExternalMethods(User, methods);
