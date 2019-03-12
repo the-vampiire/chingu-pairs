@@ -10,17 +10,34 @@ const generateState = () => crypto.randomBytes(32).toString('hex');
 // TODO: tests
 /**
  * Fortified cookie options
- * - flags: signed, httpOnly, sameSite, path, 10 min expiration
- * @param {string} cookiePath [default: /] the path this cookie is accepted at
+ * - flags: signed, httpOnly, sameSite: lax, path, expiration
+ *  - sets secure: true when NODE_ENV=production
+ * - defaults:
+ *  - httpOnly: true
+ *  - path: '/' (available on all DOMAIN paths)
+ *  - expiresIn: 10 * 60 * 1000 (10 minutes)
+ * @param {{ env: object, path: String, expiresIn: Number, httpOnly: boolean }} options
+ * @param {string} options.path the path the cookie is accepted at
+ * @param {number} options.expiresIn cookie lifespan in ms
+ * @param {boolean} options.httpOnly set httpOnly flag
  */
-const buildCookieOptions = cookiePath => ({
-  signed: true,
-  secure: true, // TODO: have to configure TLS on container / proxy
-  httpOnly: true,
-  sameSite: true,
-  path: cookiePath || '/',
-  expires: new Date(Date.now() + 60 * 10 * 1000), // 10 mins expiration
-});
+const buildCookieOptions = options => {
+  const {
+    env,
+    path = '/',
+    httpOnly = true,
+    expiresIn = 10 * 60 * 1000,
+  } = options;
+
+  return {
+    path,
+    httpOnly,
+    signed: true,
+    sameSite: 'lax',
+    secure: env && env.NODE_ENV === 'production',
+    expires: new Date(Date.now() + expiresIn), // 10 mins expiration
+  };
+};
 
 /**
  * Sets a fortified cookie in the login view response to prevent CSRF
@@ -28,11 +45,24 @@ const buildCookieOptions = cookiePath => ({
  * @param {Response} res Response object
  * @param {string} cookieName name of the cookie
  * @param {string} cookieData value of the cookie
- * @param {string} cookiePath the path this cookie is accepted at
+ * @param {{ env: Object, path: String, expiresIn: Number, httpOnly: boolean }} options options to override defaults
  */
-const setFortifiedCookie = (res, cookieName, cookieData, cookiePath) => {
-  const cookieOptions = buildCookieOptions(cookiePath);
+const setFortifiedCookie = (res, cookieName, cookieData, options) => {
+  const cookieOptions = buildCookieOptions(options);
   res.cookie(cookieName, cookieData, cookieOptions);
+};
+
+// TODO: docs and tests
+const clearFortifiedCookie = (req, res, cookieName) => {
+  const { env } = req.context;
+
+  const hasSubPath = req.path !== '/';
+  const path = `${req.baseUrl}${hasSubPath ? req.path : ''}`;
+
+  const cookieOptions = buildCookieOptions({ env, path });
+  delete cookieOptions.expires; // remove expiration to clear cookie
+
+  res.clearCookie(cookieName, cookieOptions);
 };
 
 /**
@@ -49,12 +79,11 @@ const setFortifiedCookie = (res, cookieName, cookieData, cookiePath) => {
  */
 const buildAuthRedirect = (authPayload, env) => {
   const { CLIENT_DOMAIN } = env;
-  const { github, discord, service } = authPayload;
+  const { discord, service } = authPayload.registrations;
 
-  if (!github) return '/auth';
-  if (!service) return `${CLIENT_DOMAIN}/register`;
+  if (!service) return '/registration';
   if (!discord) return '/auth/discord';
-  return CLIENT_DOMAIN;
+  return CLIENT_DOMAIN; // all complete back to client
 };
 
 // TODO: tests
@@ -71,21 +100,17 @@ const signAuthToken = (authPayload, env) => {
     expiresIn: env.AUTH_TOKEN_EXP,
   };
 
-  return jwt.sign(
-    authPayload,
-    env.AUTH_TOKEN_SECRET,
-    tokenOptions,
-  );
-}
+  return jwt.sign(authPayload, env.AUTH_TOKEN_SECRET, tokenOptions);
+};
 
 // TODO: docs and tests
-const verifyAuthToken = (token) => {
+const verifyAuthToken = (token, env) => {
   try {
     return jwt.verify(token, env.AUTH_TOKEN_SECRET, { issuer: env.DOMAIN });
-  } catch(error) {
+  } catch (error) {
     return null;
   }
-}
+};
 
 module.exports = {
   generateState,
@@ -93,5 +118,6 @@ module.exports = {
   verifyAuthToken,
   buildAuthRedirect,
   setFortifiedCookie,
+  clearFortifiedCookie,
   buildCookieOptions,
 };
